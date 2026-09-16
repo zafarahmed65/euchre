@@ -1,0 +1,102 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Design tokens read from the Concept A mockups in the client brief.
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-cream: #faf6ec;
+  --color-cream-deep: #f2ecdc;
+  --color-navy: #0e2a47;
+  --color-navy-deep: #082238;
+  --color-navy-soft: #1b3d5f;
+  --color-gold: #e0ae5a;
+  --color-gold-deep: #c9913c;
+  --color-card-red: #c8202e;
+  --color-sky: #a8d4ee;
+  --color-sky-deep: #8bc4e4;
+  --color-felt: #2f6b5e;
+  --color-felt-deep: #1f4f45;
+  --color-ink: #12212f;
+  --color-ink-muted: #4a5a68;
+  --color-rule: #ddd4bf;
+
+  --font-serif: var(--font-source-serif), Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+
+  --radius-card: 0.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+/* These live in @layer base so a utility like `text-cream` still wins — outside
+   the layer they would sit after Tailwind's utilities and silently beat them. */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    /* The audience skews 40+, so the floor is 17px rather than the usual 16. */
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--color-navy);
+    text-wrap: balance;
+  }
+
+  /* Visible focus for every keyboard user — never removed, only restyled. */
+  :focus-visible {
+    outline: 3px solid var(--color-gold);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Utilities
+   --------------------------------------------------------------------------- */
+@utility tap-target {
+  /* The brief sets a 44x44px minimum for every button and link target. */
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@utility wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 768px) {
+  .wrap {
+    padding-inline: 2rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion — the brief asks for this explicitly, and no autoplay anywhere.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

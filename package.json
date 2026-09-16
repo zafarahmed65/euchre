@@ -1,0 +1,42 @@
+{
+  "name": "midwest-euchre",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "seed": "payload run src/seed/seed.ts",
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "payload": "payload"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "3.89.0",
+    "@payloadcms/db-sqlite": "3.89.0",
+    "@payloadcms/next": "3.89.0",
+    "@payloadcms/plugin-seo": "3.89.0",
+    "@payloadcms/richtext-lexical": "3.89.0",
+    "@payloadcms/storage-vercel-blob": "3.89.0",
+    "@payloadcms/ui": "3.89.0",
+    "graphql": "^16.8.1",
+    "next": "16.3.5",
+    "payload": "3.89.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "sharp": "^0.35.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.7.3"
+  }
+}
