@@ -9,11 +9,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node scripts/start.mjs",
     "seed": "payload run src/seed/seed.ts",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
-    "payload": "payload"
+    "payload": "payload",
+    "start:next": "next start"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.89.0",
