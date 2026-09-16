@@ -39,7 +39,7 @@ export default async function HomePage() {
       <section className="bg-sky">
         <div className="wrap grid items-center gap-6 py-10 md:grid-cols-[1.1fr_1fr] md:gap-10 md:py-14">
           <div>
-            <h1 className="font-serif text-[2.1rem] leading-[1.05] font-bold text-navy sm:text-5xl md:text-6xl">
+            <h1 className="font-serif text-[2.1rem] leading-[1.05] font-bold text-navy sm:text-5xl lg:text-6xl">
               {home.heroHeading?.split('\n').map((line, i) => (
                 <span key={i} className="block">
                   {line}

@@ -1,7 +1,11 @@
 # Midwest Euchre Company — demo
 
+**Live:** https://web-production-2c7cc.up.railway.app
+**Admin:** https://web-production-2c7cc.up.railway.app/admin
+
 A working demo of the Midwest Euchre Company website, built to the client's
-"Website Design & Build Brief" (September 2026), on **Next.js 16 + Payload CMS 3**.
+"Website Design & Build Brief" (September 2026), on **Next.js 16 + Payload CMS 3**,
+deployed on Railway with Railway Postgres.
 
 It implements the approved Concept A visual direction, the weekly **Today's Hand**
 feature with live voting, and the Payload admin the owner would publish from.
@@ -93,22 +97,44 @@ tap targets are ≥44×44px; `prefers-reduced-motion` is honoured.
 
 ---
 
-## Switching to Postgres / deploying
+## Deployment
 
-The database adapter is chosen from `DATABASE_URI` in `src/payload.config.ts`:
-a `postgres://` string uses Postgres, anything else uses SQLite. Nothing else changes.
+Deployed on Railway: a `web` service and a Railway Postgres service in the
+`midwest-euchre` project. The database adapter is chosen from `DATABASE_URI` in
+`src/payload.config.ts` — a `postgres://` string uses Postgres, anything else uses
+SQLite — so local development needs no database server.
 
-For Vercel set:
+Two things about Railway shaped the setup, and both are worth knowing before
+touching it:
+
+**The database does not exist during a build.** Railway's private network is a
+runtime-only facility, so `postgres.railway.internal` does not resolve while the
+image is being built. Anything that queried the database while prerendering took
+the build down. `generateStaticParams` now returns an empty list on failure, the
+homepage and archive render per request, and the CMS globals fall back to their
+declared defaults. Where the database *is* reachable at build time — locally, or
+on Vercel — every path still prerenders exactly as before.
+
+**The schema builds itself on first boot.** This demo carries no migration
+history, and `@payloadcms/db-postgres` only pushes a schema when
+`NODE_ENV !== 'production'`. So `scripts/start.mjs` runs the seed as a
+development-mode child process, which is enough for Payload to create the tables,
+then starts Next in production. A real build would generate migrations with
+`payload migrate:create` and drop that entirely.
+
+Environment variables on the `web` service:
 
 | Variable | Notes |
 |---|---|
-| `DATABASE_URI` | Neon Postgres connection string |
+| `DATABASE_URI` | `${{Postgres.DATABASE_URL}}` — a Railway reference, so it tracks the database |
 | `PAYLOAD_SECRET` | long random string |
 | `VOTE_SALT` | random string; changing it resets duplicate-vote detection |
 | `NEXT_PUBLIC_SERVER_URL` | the deployed URL |
-| `BLOB_READ_WRITE_TOKEN` | Vercel Blob — **required**, Vercel has no persistent disk |
+| `SEED_OWNER_PASSWORD` / `SEED_EDITOR_PASSWORD` | the deployed admin logins |
 
-Then run `npm run seed` once against the production database.
+Redeploy with `railway up --service web`. Uploads are still local-disk only; a
+deployment that needs media uploads to survive restarts requires an object-storage
+adapter (Railway volumes, S3, or Vercel Blob).
 
 ---
 
