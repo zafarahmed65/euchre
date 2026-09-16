@@ -8,9 +8,11 @@ import { AppBanner } from '@/components/layout/AppBanner'
 import { getArticles, getCurrentHand, getHomepage } from '@/lib/data'
 import { PlayingCard } from '@/components/cards/PlayingCard'
 
-// Rebuilt at most once a minute; vote counts come from the uncached /api/vote,
-// so the page stays fast without ever serving stale percentages.
-export const revalidate = 60
+// Rendered per request rather than prerendered: the database is not reachable
+// during a Railway build, and a build-time prerender would otherwise bake in an
+// empty homepage. The queries are three small reads over the private network.
+// Vote counts still come from the uncached /api/vote, never from this render.
+export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
   const [home, hand, latest] = await Promise.all([

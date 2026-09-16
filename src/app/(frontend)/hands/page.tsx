@@ -7,7 +7,8 @@ import { DECISION_LABEL, DIFFICULTY_LABEL, formatDate } from '@/lib/format'
 import { DECISION_TYPES } from '@/collections/Hands'
 import type { Rank, Suit } from '@/lib/cards'
 
-export const revalidate = 60
+// Filters come from searchParams and the database is not reachable at build time.
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Past Hands & Decisions',

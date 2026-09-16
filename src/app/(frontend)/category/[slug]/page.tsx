@@ -7,9 +7,18 @@ export const revalidate = 60
 
 type Params = { params: Promise<{ slug: string }> }
 
+// Railway's private network exists only at runtime, so the database is
+// unreachable during the build. Returning an empty list lets the build succeed;
+// each page is then rendered on first request and cached by `revalidate`.
+// Where the database IS reachable at build time (local, Vercel) this still
+// prerenders every path as before.
 export async function generateStaticParams() {
-  const categories = await getCategories()
-  return categories.map((c) => ({ slug: c.slug as string }))
+  try {
+    const categories = await getCategories()
+    return categories.map((c) => ({ slug: c.slug as string }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {

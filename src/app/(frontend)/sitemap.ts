@@ -1,6 +1,9 @@
 import type { MetadataRoute } from 'next'
 import { getArticles, getCategories, getHands } from '@/lib/data'
 
+// Built per request — the database is not reachable during a Railway build.
+export const dynamic = 'force-dynamic'
+
 const base = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

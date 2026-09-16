@@ -1,6 +1,6 @@
 import { getPayload, type Where } from 'payload'
 import configPromise from '@payload-config'
-import type { Article, Category, Hand } from '@/payload-types'
+import type { Article, Category, Hand, Homepage, Navigation } from '@/payload-types'
 
 export const payloadClient = async () => getPayload({ config: configPromise })
 
@@ -110,14 +110,53 @@ export async function getCategories(): Promise<Category[]> {
   return docs
 }
 
-export async function getHomepage() {
-  const payload = await payloadClient()
-  return payload.findGlobal({ slug: 'homepage', depth: 2 })
+/**
+ * Globals are read by the shared layout, so a failure here would take down every
+ * page — including the 404. They fall back to the same defaults declared on the
+ * global itself, which also lets the app build when the database is unreachable
+ * (Railway's private network does not exist during a build).
+ */
+const HOMEPAGE_FALLBACK = {
+  heroHeading: 'Everything Euchre.\nAll in One Place.',
+  heroSubheading:
+    'Learn the game, sharpen your strategy, and join the next generation of euchre.',
+  heroCtaLabel: 'Explore Euchre',
+  heroCtaHref: '/hands',
+  featuredArticle: null,
+  appBannerEnabled: true,
+  appBannerHeading: 'Meet Euchre Next',
+  appBannerSubheading: 'A smarter way to play, learn, and compete.',
+  appBannerCtaLabel: 'Coming Soon',
+  appBannerCtaHref: '#',
+} as unknown as Homepage
+
+const NAVIGATION_FALLBACK = {
+  headerLinks: [
+    { id: '1', label: "Today's Hand", href: '/hands' },
+    { id: '2', label: 'Strategy', href: '/category/strategy' },
+    { id: '3', label: 'Learn', href: '/category/learn' },
+  ],
+  headerCta: { label: 'Euchre Next', href: '#euchre-next' },
+  footerLinks: [{ id: '1', label: 'Past Hands', href: '/hands' }],
+  socialLinks: [],
+} as unknown as Navigation
+
+export async function getHomepage(): Promise<Homepage> {
+  try {
+    const payload = await payloadClient()
+    return (await payload.findGlobal({ slug: 'homepage', depth: 2 })) as Homepage
+  } catch {
+    return HOMEPAGE_FALLBACK
+  }
 }
 
-export async function getNavigation() {
-  const payload = await payloadClient()
-  return payload.findGlobal({ slug: 'navigation', depth: 0 })
+export async function getNavigation(): Promise<Navigation> {
+  try {
+    const payload = await payloadClient()
+    return (await payload.findGlobal({ slug: 'navigation', depth: 0 })) as Navigation
+  } catch {
+    return NAVIGATION_FALLBACK
+  }
 }
 
 /** Vote tallies for one hand, counted straight from the votes collection. */
