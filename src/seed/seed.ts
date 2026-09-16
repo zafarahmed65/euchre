@@ -10,11 +10,13 @@ import { doc, h, p } from '../lib/richtext'
  * access to anything real.
  */
 const OWNER = {
+  username: process.env.SEED_OWNER_USERNAME || 'owner',
   email: process.env.SEED_OWNER_EMAIL || 'owner@midwesteuchreco.com',
   password: process.env.SEED_OWNER_PASSWORD || 'euchre2026',
   name: 'Site Owner',
 }
 const EDITOR = {
+  username: process.env.SEED_EDITOR_USERNAME || 'editor',
   email: process.env.SEED_EDITOR_EMAIL || 'editor@midwesteuchreco.com',
   password: process.env.SEED_EDITOR_PASSWORD || 'euchre2026',
   name: 'Demo Editor',
@@ -46,17 +48,37 @@ async function run() {
   // ── Users ──────────────────────────────────────────────────────────────
   const { totalDocs: userCount } = await payload.count({ collection: 'users' })
   if (userCount === 0) {
-    await payload.create({
-      collection: 'users',
-      data: { ...OWNER, role: 'admin' },
-    })
-    await payload.create({
-      collection: 'users',
-      data: { ...EDITOR, role: 'editor' },
-    })
-    payload.logger.info(`  users: ${OWNER.email} (owner) + ${EDITOR.email} (editor)`)
+    await payload.create({ collection: 'users', data: { ...OWNER, role: 'admin' } })
+    await payload.create({ collection: 'users', data: { ...EDITOR, role: 'editor' } })
+    payload.logger.info(`  users: ${OWNER.username} (owner) + ${EDITOR.username} (editor)`)
   } else {
-    payload.logger.info('  users: already present, skipped')
+    // Accounts created before username login existed have no username, which
+    // would leave them unable to sign in at all. Match them on the email they
+    // were seeded with and fill it in.
+    let backfilled = 0
+    for (const account of [OWNER, EDITOR]) {
+      const { docs } = await payload.find({
+        collection: 'users',
+        where: { email: { equals: account.email } },
+        limit: 1,
+        overrideAccess: true,
+      })
+      const existing = docs[0] as { id: number | string; username?: string | null } | undefined
+      if (existing && !existing.username) {
+        await payload.update({
+          collection: 'users',
+          id: existing.id,
+          data: { username: account.username },
+          overrideAccess: true,
+        })
+        backfilled += 1
+      }
+    }
+    payload.logger.info(
+      backfilled > 0
+        ? `  users: already present, backfilled ${backfilled} username(s)`
+        : '  users: already present, skipped',
+    )
   }
 
   // ── Categories ─────────────────────────────────────────────────────────

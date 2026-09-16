@@ -22,6 +22,9 @@ const run = (cmd, args, env) =>
     child.on('exit', (code) => resolve(code ?? 1))
   })
 
+// Clears the one schema change that a non-interactive push cannot make safely.
+await run('node', ['scripts/prepare-db.mjs'])
+
 console.log('[start] syncing schema and seeding…')
 const seedExit = await run('npx', ['payload', 'run', 'src/seed/seed.ts'], {
   NODE_ENV: 'development',

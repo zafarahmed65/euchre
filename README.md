@@ -1,7 +1,7 @@
 # Midwest Euchre Company — demo
 
-**Live:** https://web-production-2c7cc.up.railway.app
-**Admin:** https://web-production-2c7cc.up.railway.app/admin
+**Live:** https://midwest-euchre.up.railway.app
+**Admin:** https://midwest-euchre.up.railway.app/admin
 
 A working demo of the Midwest Euchre Company website, built to the client's
 "Website Design & Build Brief" (September 2026), on **Next.js 16 + Payload CMS 3**,
@@ -24,10 +24,15 @@ No database server is required locally — it runs on SQLite by default.
 
 ### Demo logins
 
-| Role | Email | Password |
+Sign in with a **username**, not an email address.
+
+| Role | Username | Password |
 |---|---|---|
-| Owner (admin) | `owner@midwesteuchreco.com` | `euchre2026` |
-| Editor | `editor@midwesteuchreco.com` | `euchre2026` |
+| Owner (admin) | `owner` | `euchre2026` |
+| Editor | `editor` | `euchre2026` |
+
+Each account still stores an email, because Payload needs one to send a password
+reset, but it is never typed at the login screen.
 
 The editor can create and publish content but cannot see the Users collection —
 the brief requires an editor account that does not share the owner login.
@@ -130,7 +135,8 @@ Environment variables on the `web` service:
 | `PAYLOAD_SECRET` | long random string |
 | `VOTE_SALT` | random string; changing it resets duplicate-vote detection |
 | `NEXT_PUBLIC_SERVER_URL` | the deployed URL |
-| `SEED_OWNER_PASSWORD` / `SEED_EDITOR_PASSWORD` | the deployed admin logins |
+| `SEED_OWNER_USERNAME` / `SEED_EDITOR_USERNAME` | admin login names |
+| `SEED_OWNER_PASSWORD` / `SEED_EDITOR_PASSWORD` | admin passwords |
 
 Redeploy with `railway up --service web`. Uploads are still local-disk only; a
 deployment that needs media uploads to survive restarts requires an object-storage

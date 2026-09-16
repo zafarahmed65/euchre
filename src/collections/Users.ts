@@ -5,9 +5,18 @@ const isAdmin = ({ req }: { req: { user?: { role?: string } | null } }) =>
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  auth: true,
+  auth: {
+    // Sign in with a username rather than an email address. The email is still
+    // stored — Payload needs it to send a password reset — but it is never typed
+    // at the login screen.
+    loginWithUsername: {
+      allowEmailLogin: false,
+      requireEmail: true,
+      requireUsername: true,
+    },
+  },
   admin: {
-    useAsTitle: 'email',
+    useAsTitle: 'username',
     group: 'Settings',
     // The brief requires an editor account for future contributors that does not
     // share the owner login — so only admins can see or manage accounts.
