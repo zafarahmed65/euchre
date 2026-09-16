@@ -82,7 +82,7 @@ export default async function HomePage() {
       </div>
 
       {/* ── Featured + Latest ─────────────────────────────────────────── */}
-      <div className="wrap grid gap-10 pb-4 md:grid-cols-[0.85fr_1.15fr] md:gap-12">
+      <div className="wrap grid gap-10 pb-4 md:grid-cols-[0.78fr_1.22fr] md:gap-12">
         <section aria-labelledby="featured-heading">
           <h2 id="featured-heading" className="font-serif text-2xl font-bold">
             Featured

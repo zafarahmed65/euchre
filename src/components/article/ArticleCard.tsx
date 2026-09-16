@@ -36,14 +36,18 @@ export function ArticleCard({ article, showMeta = true }: { article: Article; sh
           </p>
         )}
 
-        <h3 className="mt-1.5 flex items-start justify-between gap-2 font-serif text-lg leading-snug font-bold text-navy group-hover:text-gold-deep">
-          <span>{article.title}</span>
+        {/* Clamped so every card in a row is the same height — a ragged row of
+            cards reads as a bug rather than as a set. */}
+        <h3 className="mt-1.5 flex items-start justify-between gap-2 font-serif text-[17px] leading-snug font-bold text-navy group-hover:text-gold-deep">
+          <span className="line-clamp-2">{article.title}</span>
           <span aria-hidden="true" className="mt-0.5 shrink-0 text-gold-deep">
             ›
           </span>
         </h3>
 
-        <p className="mt-1 text-[15px] leading-snug text-ink-muted">{article.excerpt}</p>
+        <p className="mt-1 line-clamp-2 text-[15px] leading-snug text-ink-muted">
+          {article.excerpt}
+        </p>
 
         {showMeta && article.readingTime ? (
           <p className="mt-1.5 text-[13px] text-ink-muted/80">{article.readingTime} min read</p>
