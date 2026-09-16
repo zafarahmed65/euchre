@@ -32,10 +32,12 @@ const isPostgres = databaseURI.startsWith('postgres')
 const database = isPostgres
   ? postgresAdapter({
       pool: { connectionString: databaseURI },
-      // Payload disables schema push outside development. This demo has no
-      // migration history and a single environment, so push is enabled to let
-      // the schema build itself on first boot. A production build should
-      // generate migrations with `payload migrate:create` and drop this line.
+      // @payloadcms/db-postgres gates schema push on NODE_ENV !== 'production'
+      // (see its connect.js), so this flag only has effect when the process is
+      // not running as production. The deploy entrypoint relies on that: it runs
+      // the seed in development mode purely so the schema builds itself once,
+      // then starts the server in production. A real build would generate
+      // migrations with `payload migrate:create` and drop all of this.
       push: true,
     })
   : sqliteAdapter({ client: { url: databaseURI } })
