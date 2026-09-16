@@ -30,7 +30,14 @@ const isPostgres = databaseURI.startsWith('postgres')
  * branch on Vercel — moves it to Postgres with no other change.
  */
 const database = isPostgres
-  ? postgresAdapter({ pool: { connectionString: databaseURI } })
+  ? postgresAdapter({
+      pool: { connectionString: databaseURI },
+      // Payload disables schema push outside development. This demo has no
+      // migration history and a single environment, so push is enabled to let
+      // the schema build itself on first boot. A production build should
+      // generate migrations with `payload migrate:create` and drop this line.
+      push: true,
+    })
   : sqliteAdapter({ client: { url: databaseURI } })
 
 export default buildConfig({
